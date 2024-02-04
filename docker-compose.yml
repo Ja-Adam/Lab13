@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: db_user
+      MYSQL_PASSWORD: db_password
+    ports:
+      - "3306:3306"
+    networks:
+      - mynetwork
+    # volumes:
+    #   - db_data:/var/lib/mysql
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # image: php:apache
+    volumes:
+      - ./php-app:/var/www/html
+    depends_on:
+      - db
+    ports:
+      - "8082:80"
+    networks:
+      - mynetwork
+    # command: ["docker-php-ext-install", "pdo", "pdo_mysql"]
+    # command: ["docker-php-ext-install", "mysqli"]
+
+networks:
+  mynetwork:
+volumes:
+  db_data:
